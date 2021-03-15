@@ -40,6 +40,15 @@ func (s *CountdownOperationsSpy) Write(p []byte) (n int, err error) {
 	return
 }
 
+type ConfigurableSleeper struct {
+	Duration time.Duration
+	Sleepa   func(time.Duration)
+}
+
+func (c *ConfigurableSleeper) Sleep() {
+	c.Sleepa(c.Duration)
+}
+
 const write = "write"
 const sleep = "sleep"
 
