@@ -4,21 +4,23 @@ import (
 	"github.com/Learn-go-with-tests/http_server"
 	"log"
 	"net/http"
+	"os"
 )
 
-type InMemoryPlayerStore struct {
-	store map[string]int
-}
-
-func (i *InMemoryPlayerStore) GetPlayerScore(name string) int {
-	return 123
-}
-
-func (i *InMemoryPlayerStore) RecordWin(name string) {
-}
+const dbFileName = "game.db.json"
 
 func main() {
-	server := http_server.NewPlayerServer(http_server.NewInMemoryPlayerStore())
+	db, err := os.OpenFile(dbFileName, os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatalf("problem opening %s %v", dbFileName, err)
+	}
+
+	store, err := http_server.NewFileSystemPlayerStore(db)
+
+	if err != nil {
+		log.Fatalf("problem creating file system player store, %v ", err)
+	}
+	server := http_server.NewPlayerServer(store)
 
 	if err := http.ListenAndServe(":5000", server); err != nil {
 		log.Fatalf("could not listen on port 5000 %v", err)
