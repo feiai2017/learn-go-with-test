@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Learn-go-with-tests/http_server"
+	"github.com/Learn-go-with-tests/poker"
 	"log"
 	"net/http"
 )
@@ -9,14 +9,14 @@ import (
 const dbFileName = "game.db.json"
 
 func main() {
-	store, close, err := http_server.FileSystemPlayerStoreFromFile(dbFileName)
+	store, close, err := poker.FileSystemPlayerStoreFromFile(dbFileName)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer close()
 
-	server := http_server.NewPlayerServer(store)
+	server := poker.NewPlayerServer(store)
 
 	if err := http.ListenAndServe(":5000", server); err != nil {
 		log.Fatalf("could not listen on port 5000 %v", err)
